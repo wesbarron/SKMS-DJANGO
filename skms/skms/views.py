@@ -32,3 +32,6 @@ def createAccount(request):
             return render(request, 'sign-up.html')
               
     return render(request, 'sign-up.html')
+
+def profile(request):
+    return render(request, "profile.html")
