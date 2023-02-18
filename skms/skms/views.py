@@ -64,3 +64,4 @@ def userProfile(request):
             return render(request, 'sign-in.html')
 
     return render(request, 'user-profile.html')
+
