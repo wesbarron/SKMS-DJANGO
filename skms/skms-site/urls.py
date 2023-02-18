@@ -15,8 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from skms.admin import skms_admin_site
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('skmsadmin/', skms_admin_site.urls),
     path('skms/', include('skms.urls')),
 ]
+
+admin.site.index_title = "Security Knowledge Management System"
+admin.site.site_header = "S.K.M.S. Admin"
+admin.site.site_title = "Admin"
