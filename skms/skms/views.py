@@ -24,9 +24,9 @@ def index(request):
             return render(request, 'user-profile.html', context=context)
         else:
             messages.error(request, 'The username or password combination is incorrect.')
-            return render(request, 'sign-in.html')
+            return render(request, 'index.html')
 
-    return render(request, 'sign-in.html')
+    return render(request, 'index.html')
     
 
 def createAccount(request):
@@ -61,6 +61,6 @@ def userProfile(request):
         if userNameCheck == True and passwordCheck == True:
             return render(request, 'user-profile.html', username = username)
         else:
-            return render(request, 'sign-in.html')
+            return render(request, 'index.html')
 
     return render(request, 'user-profile.html')
