@@ -64,3 +64,20 @@ def userProfile(request):
             return render(request, 'index.html')
 
     return render(request, 'user-profile.html')
+<<<<<<< Updated upstream
+=======
+
+def discussionHome(request):
+    # if request.method == 'POST':
+    #     username = request.POST['user_name'] 
+    #     password = request.POST['password'] 
+    #     userNameCheck = User.objects.filter(username = username).exists()
+    #     passwordCheck = User.objects.filter(password = password).exists()
+    #     context = {"username":username}
+    #     if userNameCheck == True and passwordCheck == True:
+    #         return render(request, 'user-profile.html', username = username)
+    #     else:
+    #         return render(request, 'sign-in.html')
+
+    return render(request, 'discussion-home.html')
+>>>>>>> Stashed changes
