@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm  
 from .signUpForm import username_clean, email_clean
 from .models import UserAccount
+from django.http import HttpResponse, HttpResponseRedirect
+from django.core.files.storage import FileSystemStorage
 
 
 
@@ -52,32 +54,37 @@ def createAccount(request):
     return render(request, 'sign-up.html')
 
 def userProfile(request):
-    if request.method == 'POST':
-        username = request.POST['user_name'] 
-        password = request.POST['password'] 
-        userNameCheck = User.objects.filter(username = username).exists()
-        passwordCheck = User.objects.filter(password = password).exists()
-        context = {"username":username}
-        if userNameCheck == True and passwordCheck == True:
-            return render(request, 'user-profile.html', username = username)
-        else:
-            return render(request, 'index.html')
+    current_user = request.user
+    account_user = UserAccount.objects.filter(username__exact=current_user).values()
+    fs = FileSystemStorage()
+    uploaded_file_url = fs.url(account_user[0]['userimage'])
+    context = {"current_user":current_user, "current_user_id":current_user.id, "firstname":current_user.first_name, "lastname":current_user.last_name, "email":current_user.email, "type":account_user[0]['type'], "uploaded_file_url":uploaded_file_url}
 
-    return render(request, 'user-profile.html')
-<<<<<<< Updated upstream
-=======
+    return render(request, 'user-profile.html', context=context)
 
 def discussionHome(request):
-    # if request.method == 'POST':
-    #     username = request.POST['user_name'] 
-    #     password = request.POST['password'] 
-    #     userNameCheck = User.objects.filter(username = username).exists()
-    #     passwordCheck = User.objects.filter(password = password).exists()
-    #     context = {"username":username}
-    #     if userNameCheck == True and passwordCheck == True:
-    #         return render(request, 'user-profile.html', username = username)
-    #     else:
-    #         return render(request, 'sign-in.html')
+    current_user = request.user
+    context = {"current_user":current_user, "current_user_id":current_user.id}
 
-    return render(request, 'discussion-home.html')
->>>>>>> Stashed changes
+    return render(request, 'discussion-home.html', context=context)
+
+def editProfile(request):
+    current_user = request.user
+    account_user = UserAccount.objects.filter(username__exact=current_user).values()
+    context = {"current_user":current_user, "current_user_id":current_user.id, "firstname":account_user[0]["firstname"], "lastname":account_user[0]["lastname"], "email":account_user[0]["email"], "username":account_user[0]["username"], "type":account_user[0]["type"]}
+    if request.method == 'POST': 
+        first_name = request.POST['firstname']
+        last_name = request.POST['lastname'] 
+        email = request.POST['email'] 
+        username = request.POST['username']
+        type = request.POST['type']
+        userimage = request.FILES['userimage']
+        fs = FileSystemStorage()
+        filename = fs.save(userimage.name, userimage)
+        uploaded_file_url = fs.url(filename)
+        context = {"uploaded_file_url":uploaded_file_url,"firstname":first_name, "lastname":last_name, "email":email, "current_user":username, "type":type}
+        ins2 = UserAccount.objects.filter(username__exact=username).update(firstname=first_name, lastname=last_name, email=email, username=username, userimage=userimage)
+        
+        return render(request, 'user-profile.html', context=context)
+
+    return render(request, 'edit-profile.html', context=context)

@@ -16,12 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from skms.admin import skms_admin_site
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('skmsadmin/', skms_admin_site.urls),
     path('skms/', include('skms.urls')),
-]
+]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 
 admin.site.index_title = "Security Knowledge Management System"
 admin.site.site_header = "S.K.M.S. Admin"

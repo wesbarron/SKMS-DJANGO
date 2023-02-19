@@ -10,6 +10,7 @@ class UserAccount(models.Model):
     password = models.CharField(max_length=255)
     status = models.CharField(max_length=255, choices= (('Active','Active'), ('Inactive','Inactive')), default='Active')
     type = models.CharField(max_length=255, choices= (('User','User'), ('Expert','Expert')), default='User')
+    userimage = models.ImageField(null=True, blank=True, upload_to="images/")
 
     def __str__(self):
         return self.username
