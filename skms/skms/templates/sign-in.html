@@ -18,7 +18,8 @@
  <div class="main">
     <div class="col-md-6 col-sm-12">
        <div class="login-form">
-          <form method="POST">
+          <form method ="POST">
+            {% csrf_token %}
              <div class="form-group">
                 <label>User Name</label>
                 <input type="text" name="user_name" class="form-control" placeholder="User Name">
@@ -29,12 +30,20 @@
              </div>
              <button type="submit" class="btn btn-black">Login</button>
             </form>
-            <form action="/createAccount.html">
+            <form action="sign-up/">
                 <button class="btn btn-secondary">Register</button>
           </form>
-          <p class="text-center text-muted mt-5 mb-0">Forgot your Password? <a href="accountReset.html"
+          <p class="text-center text-muted mt-5 mb-0">Forgot your Password? <a href="skmsadmin/password_change/"
             class="fw-bold text-body"><u>Reset it here</u></a></p>
        </div>
+       <br>
+       {% if messages %}
+        <p class="messages">
+        {% for message in messages %}
+            <h2 style="color:red; font-size: larger; text-align: center;"{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h2>
+        {% endfor %}
+        </p>
+       {% endif %}
     </div>
  </div>
 
