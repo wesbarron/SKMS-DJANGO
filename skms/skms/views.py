@@ -101,3 +101,13 @@ def createPost(request):
         newPost = Post(title=title, content=content, author=author, datetime=datetime, subject=subject)
         newPost.save()
         return redirect('forum')
+def createComment(request, post_id):
+     if request.method == 'POST': 
+        post = Post.objects.get(id=post_id)
+        author = request.user
+        content = request.POST['content']
+        datetime = timezone.now()
+        
+        newComment = Comment(post=post, content=content, author=author, datetime=datetime)
+        newComment.save()
+        return redirect('post', post_id=post_id)

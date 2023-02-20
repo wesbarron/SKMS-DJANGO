@@ -9,6 +9,6 @@ urlpatterns = [
     path('forum/', views.forum, name='forum'),
     path('forum/create-post/', views.renderCreatePost),
     path('forum/create-post/create', views.createPost),
-    path('forum/post/<int:post_id>/', views.post, name='post')
-
+    path('forum/post/<int:post_id>/', views.post, name='post'),
+     path('submit-comment/<int:post_id>', views.createComment, name='create-comment')
 ]
