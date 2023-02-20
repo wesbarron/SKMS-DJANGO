@@ -1,3 +1,10 @@
 from django.contrib import admin
+from .models import UserAccount
+from . import models
 
-# Register your models here.
+class SKMSAdminData(admin.AdminSite):
+    site_header = 'SKMS User Admin Info'
+
+skms_admin_site = SKMSAdminData(name='SKMSAdmin')
+
+skms_admin_site.register(models.UserAccount)
