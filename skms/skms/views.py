@@ -4,12 +4,13 @@ from django.contrib import messages
 from django.contrib.auth.models import User  
 from django.contrib.auth.forms import UserCreationForm  
 from .signUpForm import username_clean, email_clean
-from .models import UserAccount
+from .models import *
 
+from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.from django.http import HttpResponse
-
 
 def index(request):
     if request.method == 'POST':
@@ -65,3 +66,38 @@ def userProfile(request):
 
     return render(request, 'user-profile.html')
 
+def forum(request):
+    posts = Post.objects.all()
+    return render(request, "discussion-home.html", {'posts':posts})
+
+def post(request, post_id):
+    post = Post.objects.get(id=post_id)
+    return render(request, "post.html", {'post':post})
+
+
+def renderCreatePost(request):
+    return render(request,"create-post.html")
+
+def createTestPost():
+    author = User.objects.get(username='katieavt')
+    post1 = Post(title='This is a test post',
+        content='This is test content.',
+        author=author,
+        datetime = timezone.now(),
+        subject="TestSubject"
+    )
+    post1.save()
+    return post1
+
+@login_required
+def createPost(request):
+    if request.method == 'POST': 
+        title = request.POST['title']
+        content = request.POST['description'] 
+        author = request.user
+        datetime = timezone.now()
+        subject = "Null Subject"
+        
+        newPost = Post(title=title, content=content, author=author, datetime=datetime, subject=subject)
+        newPost.save()
+        return redirect('forum')
