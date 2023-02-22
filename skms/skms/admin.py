@@ -8,3 +8,5 @@ class SKMSAdminData(admin.AdminSite):
 skms_admin_site = SKMSAdminData(name='SKMSAdmin')
 
 skms_admin_site.register(models.UserAccount)
+
+skms_admin_site.site_url = "/skms/index/"

@@ -18,7 +18,7 @@
  <div class="main">
     <div class="col-md-6 col-sm-12">
        <div class="login-form">
-          <form method ="POST">
+          <form action="/skms/index/" method ="POST">
             {% csrf_token %}
              <div class="form-group">
                 <label>User Name</label>
@@ -30,10 +30,10 @@
              </div>
              <button type="submit" class="btn btn-black">Login</button>
             </form>
-            <form action="sign-up/">
+            <form action="/skms/sign-up/">
                 <button class="btn btn-secondary">Register</button>
           </form>
-          <p class="text-center text-muted mt-5 mb-0">Forgot your Password? <a href="skmsadmin/password_change/"
+          <p class="text-center text-muted mt-5 mb-0">Forgot your Password? <a href="/skmsadmin/password_change/"
             class="fw-bold text-body"><u>Reset it here</u></a></p>
        </div>
        <br>
