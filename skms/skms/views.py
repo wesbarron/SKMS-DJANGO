@@ -101,6 +101,7 @@ def createPost(request):
         newPost = Post(title=title, content=content, author=author, datetime=datetime, subject=subject)
         newPost.save()
         return redirect('forum')
+@login_required
 def createComment(request, post_id):
      if request.method == 'POST': 
         post = Post.objects.get(id=post_id)
@@ -111,3 +112,7 @@ def createComment(request, post_id):
         newComment = Comment(post=post, content=content, author=author, datetime=datetime)
         newComment.save()
         return redirect('post', post_id=post_id)
+
+@login_required
+def home(request):
+    return render(request, "home.html")
