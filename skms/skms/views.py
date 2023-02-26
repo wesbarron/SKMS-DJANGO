@@ -137,6 +137,13 @@ def createPost(request):
         newPost = Post(title=title, content=content, author=author, datetime=datetime, subject=subject)
         newPost.save()
         return redirect('forum')
+def likePost(request, post_id):
+    if request.method == 'POST':
+        post = Post.objects.get(id=post_id)
+        post.likes += 1
+        post.save()
+        return JsonResponse({'likes': post.likes})
+
 #@login_required
 def createComment(request, post_id):
      if request.method == 'POST': 

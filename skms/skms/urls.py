@@ -14,5 +14,6 @@ urlpatterns = [
      path('submit-comment/<int:post_id>', views.createComment, name='create-comment'),
      path('forum/sort=<str:sort>', views.sort_by, name='sort-by'),
      path('forum/filter=<str:subject>', views.filterSubject, name='filter-subject'),
+     path('like-post/post_id=<int:post_id>', views.likePost, name='like-post'),
 
 ]

@@ -7,6 +7,7 @@
     
       <div class="col-md-8 mb-3 mb-sm-0">
         <h5>
+          <input type="hidden" value="{{post.id}}" id="post-id" />
           <a href="#" class="text-primary">{{post.title}}</a>
         </h5>
         <p class="text-sm"><span class="op-6">Posted </span>{{post.datetime}} <span class="op-6">by</span> <a class="text-black" href="#">{{post.author}}</a></p>
@@ -15,15 +16,21 @@
       </div>
       <div class="col-md-4 op-7">
         <div class="row text-center op-7">
-          <div class="col px-1"> <i class="ion-connection-bars icon-1x"></i> <span class="d-block text-sm">{{post.likes}} Likes</span> </div>
-          <div class="col px-1"> <i class="ion-ios-chatboxes-outline icon-1x"></i> <span class="d-block text-sm">Comment Count</span> </div>
+          <p id="post-likes">{{post.likes}}</p>
+          
         </div>
       </div>
 
     </div>
-    <div class="reply-button-div">
-      <a href="#reply" class="btn btn-success" id="reply">Reply</a>
+    <div class="d-flex align-content-start">
+      <div class="reply-button-div m-2">
+        <a href="#reply" class="btn btn-success" id="reply"><i class="fa-solid fa-reply"></i> Reply</a>
+      </div>
+      <div class="m-2">
+        <button id="like-post" class="btn btn-secondary"><i class="fa-solid fa-thumbs-up"></i> Like</button>
+      </div>
     </div>
+    
   </div>
 
   <div id="reply-div" style="display:none;">
@@ -72,6 +79,20 @@
     $(document).on('click','#reply', function(){
       $('#reply-div').show()
     });
+    $(document).on('click', '#like-post', function(){
+  var post_id = $('#post-id').val();
+  var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+  $.ajax({
+    url: '/skms/like-post/post_id=' + post_id,
+    type: 'POST',
+    headers: {
+      'X-CSRFToken': csrftoken
+    },
+    success: function(data){
+      $('#post-likes').html(data.likes)
+    }
+  });
+});
     
   </script>
   {% endblock %}
