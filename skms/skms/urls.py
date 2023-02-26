@@ -13,5 +13,6 @@ urlpatterns = [
     path('forum/post/<int:post_id>/', views.post, name='post'),
      path('submit-comment/<int:post_id>', views.createComment, name='create-comment'),
      path('forum/sort-by/<str:sort>', views.sort_by, name='sort-by'),
+     path('forum/filter-by/<str:subject>', views.filterSubject, name='filter-subject'),
 
 ]

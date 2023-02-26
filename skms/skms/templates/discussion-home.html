@@ -21,9 +21,10 @@
     <div class="filter-div text-left row mb-5">
             <div class="filter-by-tag-div col-4 mb-3 mb-sm-0">
                 <div class="dropdown bootstrap-select form-control form-control-lg bg-white bg-op-9 text-sm w-lg-50">
-                <select class="form-control form-control-lg bg-white bg-op-9 text-sm w-lg-50" data-toggle="select" tabindex="-98">
+                <select id="filter-select" class="form-control form-control-lg bg-white bg-op-9 text-sm w-lg-50" data-toggle="select" tabindex="-98">
+                  <option selected disabled>Filter by</option>
                   {% for subject in subjects %}
-                  <option>{{subject.name}}</option>
+                  <option value="{{ subject.name }}" {% if subject.name == selected_subject %}selected{% endif %}>{{ subject.name }}</option>
                   {% endfor %}
                 </select>
                 </div>
@@ -39,7 +40,7 @@
             <div class="sort-div col-4 text-lg-right">
                 <div class="dropdown bootstrap-select form-control form-control-lg bg-white bg-op-9 ml-auto text-sm w-lg-50">
                     <select id="sort-select" class="form-control form-control-lg bg-white bg-op-9 ml-auto text-sm w-lg-50" data-toggle="select" tabindex="-98">
-                      <option> Sort by </option>
+                      <option selected disabled>Sort by</option>
                       <option> Comments </option>
                       <option> Likes </option>
                       <option hidden> Views </option>
@@ -86,7 +87,13 @@
 {% block script %}
 
 <script>
-  
+  $(document).on('change','#filter-select',function(){
+    var option = $(this).val();
+    var url = "/skms/forum/filter-by/" + option;
+
+    // Redirect the user to the URL
+    window.location.href = url;
+  });
   $(document).on('change','#sort-select',function(){
     var option = $(this).val();
     $.ajax({

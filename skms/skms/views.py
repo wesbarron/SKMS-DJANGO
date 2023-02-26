@@ -97,6 +97,13 @@ def sort_by(request, sort):
         # Return the serialized data as a JSON response
     return JsonResponse({'data': data})
 
+def filterSubject(request, subject):
+    print(subject)
+    filtered_posts = Post.objects.filter(subject=subject)
+    subjects = Subject.objects.all()
+
+    return render(request, "discussion-home.html", {'posts':filtered_posts, 'subjects':subjects,'selected_subject': subject})
+
 def post(request, post_id):
     post = Post.objects.get(id=post_id)
     return render(request, "post.html", {'post':post})
