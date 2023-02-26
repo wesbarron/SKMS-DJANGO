@@ -110,7 +110,8 @@ def post(request, post_id):
 
 
 def renderCreatePost(request):
-    return render(request,"create-post.html")
+    subjects = Subject.objects.all()
+    return render(request,"create-post.html", {'subjects': subjects})
 
 def createTestPost():
     author = User.objects.get(username='katiea')

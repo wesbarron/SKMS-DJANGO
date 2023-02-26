@@ -89,7 +89,7 @@
 <script>
   $(document).on('change','#filter-select',function(){
     var option = $(this).val();
-    var url = "/skms/forum/filter-by/" + option;
+    var url = "/skms/forum/filter=" + option;
 
     // Redirect the user to the URL
     window.location.href = url;
@@ -97,7 +97,7 @@
   $(document).on('change','#sort-select',function(){
     var option = $(this).val();
     $.ajax({
-      url: '/skms/forum/sort-by/' + option,
+      url: '/skms/forum/sort=' + option,
       type: 'GET',
       success: function(data){
         var posts = JSON.parse(data.data);
