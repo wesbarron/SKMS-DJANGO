@@ -8,6 +8,13 @@ from .models import *
 
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
+from django.http import JsonResponse
+from django.core import serializers
+from django.core.serializers.json import DjangoJSONEncoder
+
+
+
 
 
 # Create your views here.from django.http import HttpResponse
@@ -68,7 +75,27 @@ def userProfile(request):
 
 def forum(request):
     posts = Post.objects.all()
-    return render(request, "discussion-home.html", {'posts':posts})
+    subjects = Subject.objects.all()
+    return render(request, "discussion-home.html", {'posts':posts, 'subjects':subjects})
+
+def sort_by(request, sort):
+    if(sort=='Likes'):
+        annotated_posts = Post.objects.annotate(
+        like_count=Count('likes'))
+        # Order the annotated posts by like count
+        sorted_posts = annotated_posts.order_by('-like_count')
+        # Serialize the filtered and sorted posts as JSON data
+        data = serializers.serialize('json', sorted_posts, fields=('id', 'title', 'author', 'datetime', 'likes', 'comments', 'subject'))
+        # Return the serialized data as a JSON response
+    if(sort=='Comments'):
+        annotated_posts = Post.objects.annotate(
+        comment_count=Count('comments'))
+        # Order the annotated posts by like count
+        sorted_posts = annotated_posts.order_by('-comment_count')
+        # Serialize the filtered and sorted posts as JSON data
+        data = serializers.serialize('json', sorted_posts, fields=('id', 'title', 'author', 'datetime', 'likes', 'comments', 'subject'))
+        # Return the serialized data as a JSON response
+    return JsonResponse({'data': data})
 
 def post(request, post_id):
     post = Post.objects.get(id=post_id)
@@ -79,17 +106,18 @@ def renderCreatePost(request):
     return render(request,"create-post.html")
 
 def createTestPost():
-    author = User.objects.get(username='katieavt')
-    post1 = Post(title='This is a test post',
+    author = User.objects.get(username='katiea')
+    post1 = Post(title='This is another test post',
         content='This is test content.',
         author=author,
         datetime = timezone.now(),
-        subject="TestSubject"
+        subject="TestSubject",
+        likes=4
     )
     post1.save()
     return post1
 
-@login_required
+#@login_required
 def createPost(request):
     if request.method == 'POST': 
         title = request.POST['title']
@@ -101,7 +129,7 @@ def createPost(request):
         newPost = Post(title=title, content=content, author=author, datetime=datetime, subject=subject)
         newPost.save()
         return redirect('forum')
-@login_required
+#@login_required
 def createComment(request, post_id):
      if request.method == 'POST': 
         post = Post.objects.get(id=post_id)
@@ -113,6 +141,6 @@ def createComment(request, post_id):
         newComment.save()
         return redirect('post', post_id=post_id)
 
-@login_required
+#@login_required
 def home(request):
     return render(request, "home.html")

@@ -22,10 +22,9 @@
             <div class="filter-by-tag-div col-4 mb-3 mb-sm-0">
                 <div class="dropdown bootstrap-select form-control form-control-lg bg-white bg-op-9 text-sm w-lg-50">
                 <select class="form-control form-control-lg bg-white bg-op-9 text-sm w-lg-50" data-toggle="select" tabindex="-98">
-                  <option> Categories </option>
-                  <option> Learn </option>
-                  <option> Share </option>
-                  <option> Build </option>
+                  {% for subject in subjects %}
+                  <option>{{subject.name}}</option>
+                  {% endfor %}
                 </select>
                 </div>
               </div>
@@ -39,17 +38,17 @@
               </div>
             <div class="sort-div col-4 text-lg-right">
                 <div class="dropdown bootstrap-select form-control form-control-lg bg-white bg-op-9 ml-auto text-sm w-lg-50">
-                    <select class="form-control form-control-lg bg-white bg-op-9 ml-auto text-sm w-lg-50" data-toggle="select" tabindex="-98">
-                      <option> Filter by </option>
-                      <option> Votes </option>
-                      <option> Replys </option>
-                      <option> Views </option>
+                    <select id="sort-select" class="form-control form-control-lg bg-white bg-op-9 ml-auto text-sm w-lg-50" data-toggle="select" tabindex="-98">
+                      <option> Sort by </option>
+                      <option> Comments </option>
+                      <option> Likes </option>
+                      <option hidden> Views </option>
                     </select>
                 </div>
               </div>
     </div>
     <div id="posts-div">
-        <div id="recent-posts-div row">
+        <div id="recent-posts-div">
             {% if posts %}
                 {% for post in posts %}
                 <div class="card row-hover pos-relative py-3 px-3 mb-3 border-warning border-top-0 border-right-0 border-bottom-0 rounded-0">
@@ -64,7 +63,7 @@
                       <div class="col-md-4 op-7">
                         <div class="row text-center op-7">
                           <div class="col px-1"> <i class="ion-connection-bars icon-1x"></i> <span class="d-block text-sm">{{post.likes}} Likes</span> </div>
-                          <div class="col px-1"> <i class="ion-ios-chatboxes-outline icon-1x"></i> <span class="d-block text-sm">Comment Count</span> </div>
+                          <div class="col px-1"> <i class="ion-ios-chatboxes-outline icon-1x"></i> <span class="d-block text-sm">{{post.comments.count}}</span> </div>
                         </div>
                       </div>
                     </div>
@@ -82,4 +81,51 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block script %}
+
+<script>
+  
+  $(document).on('change','#sort-select',function(){
+    var option = $(this).val();
+    $.ajax({
+      url: '/skms/forum/sort-by/' + option,
+      type: 'GET',
+      success: function(data){
+        var posts = JSON.parse(data.data);
+                var postsContainer = $("#recent-posts-div");
+                console.log(postsContainer)
+                postsContainer.empty();
+                for (var i = 0; i < posts.length; i++) {
+                    var post = posts[i].fields;
+                    var postHTML = `
+                        <div class="card row-hover pos-relative py-3 px-3 mb-3 border-warning border-top-0 border-right-0 border-bottom-0 rounded-0">
+                            <div class="row align-items-center">
+                              <div class="col-md-8 mb-3 mb-sm-0">
+                                <h5>
+                                  <a href="/forum/post/${post.id}/" class="text-primary">${post.title}</a>
+                                </h5>
+                                <p class="text-sm"><span class="op-6">Posted </span>${post.datetime} <span class="op-6">by</span> <a class="text-black" href="#">${post.author}</a></p>
+                                <div class="text-sm op-5"> <a class="text-black mr-2" href="#">${post.subject}</a></div>
+                              </div>
+                              <div class="col-md-4 op-7">
+                                <div class="row text-center op-7">
+                                  <div class="col px-1"> <i class="ion-connection-bars icon-1x"></i> <span class="d-block text-sm">${post.likes} Likes</span> </div>
+                                  <div class="col px-1"> <i class="ion-ios-chatboxes-outline icon-1x"></i> <span class="d-block text-sm">${post.comments.length}</span> </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                    `;
+                    postsContainer.append(postHTML);
+                }
+      },
+      error: function(xhr, status, error) {
+        // Code to execute when the request fails
+        console.log(xhr.responseText);
+    }
+    })
+  });
+</script>
 {% endblock %}
