@@ -9,6 +9,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.files.storage import FileSystemStorage
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from skms import admin
+from .forms import *
 
 
 # Create your views here.from django.http import HttpResponse
@@ -24,15 +26,18 @@ def index(request):
         #print(userNameCheck, userPasswordCheck)
         #context = {"current_user":username}
         #current_user = request.user
+        fs = FileSystemStorage()
+        uploaded_file_url = fs.url(account_user[0]['userimage'])
         posts = Post.objects.all()
-        context = {"current_user":username, "posts":posts}
+        context = {"current_user":username, "posts":posts, "uploaded_file_url":uploaded_file_url}
         if userNameCheck == True and userPasswordCheck == True:
+            #admin.site.login = username
             return render(request, 'discussion-home.html', context=context)
         else:
             messages.error(request, 'The username or password combination is incorrect.')
-            return render(request, 'index.html')
+            return render(request, 'registration/index.html')
 
-    return render(request, 'index.html')
+    return render(request, 'registration/index.html')
     
 
 def createAccount(request):
@@ -58,13 +63,17 @@ def createAccount(request):
     return render(request, 'sign-up.html')
 
 def userProfile(request):
+    
     current_user = request.user
     account_user = UserAccount.objects.filter(username__exact=current_user).values()
-    fs = FileSystemStorage()
-    uploaded_file_url = fs.url(account_user[0]['userimage'])
-    context = {"current_user":current_user, "current_user_id":current_user.id, "firstname":current_user.first_name, "lastname":current_user.last_name, "email":current_user.email, "type":account_user[0]['type'], "uploaded_file_url":uploaded_file_url}
+    if current_user.is_staff:
+        fs = FileSystemStorage()
+        uploaded_file_url = fs.url(account_user[0]['userimage'])
+        context = {"current_user":current_user, "current_user_id":current_user.id, "firstname":current_user.first_name, "lastname":current_user.last_name, "email":current_user.email, "type":account_user[0]['type'], "uploaded_file_url":uploaded_file_url}
 
-    return render(request, 'user-profile.html', context=context)
+        return render(request, 'user-profile.html', context=context)
+    else:
+        return redirect("/skmsadmin/login/")
 
 def forum(request):
     current_user = request.user
@@ -139,3 +148,47 @@ def createComment(request, post_id):
         newComment.save()
         return redirect('post', post_id=post_id)
 
+def submitReport(request):
+    submitted = False
+    if request.method == 'POST':
+        form = SubmitReportForm(request.POST) 
+        userType = request.POST['reporter_name']
+        if userType == 'Current User': 
+            if form.is_valid():
+                obj = form.save(commit=False)
+                obj.submitter = request.user
+                obj.save()
+            return HttpResponseRedirect('/skms/report?submitted=True')
+        else:
+            if form.is_valid():
+                obj = form.save(commit=False)
+                obj.submitter = 'Anonymous'
+                obj.save()
+    else:
+        form = SubmitReportForm
+        if 'submitted' in request.GET:
+            submitted = True
+    return render(request, 'report.html', {'form': form, 'submitted': submitted})
+
+def submitVoice(request):
+    submitted = False
+    if request.method == 'POST':
+        form = SubmitVoiceForm(request.POST)
+        userType = request.POST['voice_user']
+        if userType == 'Current User': 
+            if form.is_valid():
+                obj = form.save(commit=False)
+                obj.submitter = request.user
+                obj.save()
+                return HttpResponseRedirect('/skms/voice?submitted=True')
+        else:
+            if form.is_valid():
+                obj = form.save(commit=False)
+                obj.submitter = 'Anonymous'
+                obj.save()
+                return HttpResponseRedirect('/skms/voice?submitted=True')
+    else:
+        form = SubmitVoiceForm
+        if 'submitted' in request.GET:
+            submitted = True
+    return render(request, 'voice.html', {'form': form, 'submitted': submitted})

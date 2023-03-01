@@ -13,6 +13,8 @@ urlpatterns = [
     path('create/', views.createPost, name='create'),
     path('post/<int:post_id>/', views.post, name='post'),
     path('submit-comment/<int:post_id>', views.createComment, name='create-comment'),
-    path('login', auth_views.LoginView.as_view(template_name='skms/login.html'), name='login'),
-    path('logout', auth_views.LogoutView.as_view(template_name='skms/logout.html'), name='logout'),
+    path('report/', views.submitReport, name='submitReport'),
+    path('voice/', views.submitVoice, name='submitVoice'),
+    #path('login', auth_views.LoginView.as_view(template_name='skms/login.html'), name='login'),
+    #path('logout', auth_views.LogoutView.as_view(template_name='skms/logout.html'), name='logout'),
 ]
