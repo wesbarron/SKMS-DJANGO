@@ -130,10 +130,13 @@ MEDIA_URL = '/media/images/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+if DEBUG:
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static')
+    ]
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 LOGIN_REDIRECT_URL = "/"
 
-STATIC_ROOT = "skms/static/"
+#STATIC_ROOT = "skms/static/"
