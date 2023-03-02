@@ -1,1 +1,1 @@
-web: skms:app
+web: skms-site.wsgi
