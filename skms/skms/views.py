@@ -124,7 +124,7 @@ def createTestPost():
 def renderCreatePost(request):
     return render(request,"create-post.html")
 
-@login_required
+#@login_required
 def createPost(request):
     if request.method == 'POST': 
         title = request.POST['title']
