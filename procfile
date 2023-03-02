@@ -1,1 +1,1 @@
-web: skms-site.wsgi.application
+web: gunicorn skms-site.wsgi.application
