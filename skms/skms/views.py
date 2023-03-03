@@ -192,3 +192,11 @@ def submitVoice(request):
         if 'submitted' in request.GET:
             submitted = True
     return render(request, 'voice.html', {'form': form, 'submitted': submitted})
+
+
+def searchSkms(request):
+    current_user = request.user
+    posts = Post.objects.all()
+    context = {"current_user":current_user, "current_user_id":current_user.id, "posts":posts}
+
+    return render(request, 'search-skms.html', context=context)

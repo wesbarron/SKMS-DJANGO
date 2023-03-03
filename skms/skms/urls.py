@@ -15,6 +15,7 @@ urlpatterns = [
     path('submit-comment/<int:post_id>', views.createComment, name='create-comment'),
     path('report/', views.submitReport, name='submitReport'),
     path('voice/', views.submitVoice, name='submitVoice'),
+    path('search-skms/', views.searchSkms, name='search-skms'),
     #path('login', auth_views.LoginView.as_view(template_name='skms/login.html'), name='login'),
     #path('logout', auth_views.LogoutView.as_view(template_name='skms/logout.html'), name='logout'),
 ]
