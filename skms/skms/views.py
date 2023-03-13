@@ -132,7 +132,7 @@ def createPost(request):
         content = request.POST['description'] 
         author = request.user
         datetime = timezone.now()
-        subject = "Null Subject"
+        subject = request.POST['subject']
         
         newPost = Post(title=title, content=content, author=author, datetime=datetime, subject=subject)
         newPost.save()

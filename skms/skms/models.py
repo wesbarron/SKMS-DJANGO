@@ -38,7 +38,6 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.author.username} - {self.content}'
-
 class Subject(models.Model):
     name = models.CharField(max_length=100)
 
